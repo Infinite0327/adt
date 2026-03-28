@@ -8,3 +8,4 @@ type List[A any] struct {
 }
 
 其中 type listTag int
+不过我的代码里有初始化链表结点的相关函数 func Nil和func Cons
