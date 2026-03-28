@@ -29,16 +29,6 @@ func Cons[A any](x A, xs List[A]) List[A] {
     }
 }
 
-func (l List[A]) Match(onNil func(), onCons func(head A, tail List[A])) {
-    switch l.tag {
-    case tagNil:
-        onNil()
-    case tagCons:
-        onCons(l.head, *l.tail)
-    default:
-        panic("Unknown List state!")
-    }
-}
 //实现maybe
 type maybeTag int
 const (
@@ -100,5 +90,34 @@ func (e Either[A,B]) Match (onLeft func(A),onRight func(B)){
 	default:
         panic("Unknown Either state!")
 	}
+}
+
+//实现head函数
+func Head[A any](l List[A]) Maybe[A] {
+    switch l.tag {
+    case tagNil:
+        return None[A]() 
+    case tagCons:
+        return Just(l.head)
+    default:
+        panic("Unknown List state!")
+    }
+}
+
+//除0 的一个either处理错误的例子 
+func SafeDivide(a, b float64) Either[string, float64] {
+    if b == 0 {
+        return Left[string, float64]("error: division by zero")
+    }
+    return Right[string, float64](a / b)
+}
+
+// maybe的哈希表查找
+func Lookup[K comparable, V any](m map[K]V, key K) Maybe[V] {
+    val, ok := m[key]
+    if !ok {
+        return None[V]()
+	}
+    return Just(val)
 }
 
